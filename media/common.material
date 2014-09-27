@@ -1,0 +1,27 @@
+material ground_mat
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ground.png
+			}
+		}
+	}
+}
+
+material unicorn_mat
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture unicorn.jpg
+			}
+		}
+	}
+}
