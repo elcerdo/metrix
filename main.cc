@@ -43,8 +43,33 @@ int main(int argc, char* argv[])
 
     if (!root->showConfigDialog()) return -1;
 
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation("media", "FileSystem");
+
     Ogre::RenderWindow* window = root->initialise(true);
     Ogre::SceneManager* scene = root->createSceneManager(Ogre::ST_GENERIC);
+
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+    {
+        Ogre::Camera* mCamera = scene->createCamera("PlayerCam");
+
+        mCamera->setPosition(Ogre::Vector3(0,0,500));
+        mCamera->lookAt(Ogre::Vector3(0,0,0));
+        mCamera->setNearClipDistance(5);
+
+        Ogre::Viewport* vp = window->addViewport(mCamera);
+        vp->setBackgroundColour(Ogre::ColourValue(.8,0,0));
+    }
+
+    {
+        Ogre::ManualObject* manual = scene->createManualObject("UnicornMaterial");
+        manual->begin("FistSection", Ogre::RenderOperation::OT_LINE_STRIP);
+        manual->position(0,100,0);
+        manual->position(0,0,0);
+        manual->position(100,0,0);
+        manual->end();
+        scene->getRootSceneNode()->attachObject(manual);
+    }
 
     scene->setAmbientLight(Ogre::ColourValue(.5,.5,1.));
 
