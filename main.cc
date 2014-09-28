@@ -95,6 +95,13 @@ int main(int argc, char* argv[])
     }
 
     {
+        Ogre::Entity* object = scene->createEntity("ship", "ship.mesh");
+        Ogre::SceneNode* node = scene->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0,0,20));
+        node->scale(20,20,20);
+        node->attachObject(object);
+    }
+
+    {
         Ogre::MeshManager::getSingleton().createPlane(
             "ground_plane.mesh",
             Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,

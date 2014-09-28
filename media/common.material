@@ -25,3 +25,17 @@ material unicorn_mat
 		}
 	}
 }
+
+material ship_mat
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ship.png
+			}
+		}
+	}
+}
