@@ -1,4 +1,4 @@
-project(supergame)
+project(metrix)
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -11,7 +11,6 @@ include_directories(${OGRE_INCLUDE_DIRS})
 pkg_search_module(OIS REQUIRED OIS)
 message(STATUS "** OIS_VERSION ${OIS_VERSION}")
 include_directories(${OIS_INCLUDE_DIRS})
-message(STATUS "prout ${OIS_LIBRARIES}")
 
 add_executable(prout
     main.cc)
