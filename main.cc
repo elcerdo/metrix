@@ -12,6 +12,12 @@ class SimpleFrameListener : public Ogre::FrameListener
             mKeyboard(keyboard),
             mMouse(mouse)
         {
+            Ogre::SceneManager* scene = Ogre::Root::getSingleton().getSceneManager("main_scene");
+            player_cam = scene->getCamera("player_cam");
+            ship_object = scene->createEntity("ship", "ship.mesh");
+            ship_node = scene->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0,0,0));
+            ship_node->scale(10,10,10);
+            ship_node->attachObject(ship_object);
         }
 
         bool
@@ -20,9 +26,22 @@ class SimpleFrameListener : public Ogre::FrameListener
             mKeyboard->capture();
             mMouse->capture();
 
-            if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+            if (mKeyboard->isKeyDown(OIS::KC_ESCAPE))
                 return false;
 
+            if (mKeyboard->isKeyDown(OIS::KC_UP))
+                ship_node->translate(1,0,0, Ogre::SceneNode::TS_LOCAL);
+
+            if (mKeyboard->isKeyDown(OIS::KC_DOWN))
+                ship_node->translate(-1,0,0, Ogre::SceneNode::TS_LOCAL);
+
+            if (mKeyboard->isKeyDown(OIS::KC_LEFT))
+                ship_node->yaw(Ogre::Degree(1));
+
+            if (mKeyboard->isKeyDown(OIS::KC_RIGHT))
+                ship_node->yaw(Ogre::Degree(-1));
+
+            player_cam->lookAt(ship_node->convertLocalToWorldPosition(Ogre::Vector3(1.5,0,0)));
             return true;
         }
 
@@ -33,6 +52,10 @@ class SimpleFrameListener : public Ogre::FrameListener
         }
 
     private:
+        Ogre::Camera* player_cam;
+        Ogre::Entity* ship_object;
+        Ogre::SceneNode* ship_node;
+
         OIS::Keyboard* mKeyboard;
         OIS::Mouse* mMouse;
 };
@@ -47,11 +70,11 @@ int main(int argc, char* argv[])
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     Ogre::RenderWindow* window = root->initialise(true);
-    Ogre::SceneManager* scene = root->createSceneManager(Ogre::ST_GENERIC);
+    Ogre::SceneManager* scene = root->createSceneManager(Ogre::ST_GENERIC, "main_scene");
 
 
     {
-        Ogre::Camera* mCamera = scene->createCamera("PlayerCam");
+        Ogre::Camera* mCamera = scene->createCamera("player_cam");
 
         mCamera->setPosition(Ogre::Vector3(200,100,500));
         mCamera->lookAt(Ogre::Vector3(0,0,0));
@@ -92,13 +115,6 @@ int main(int argc, char* argv[])
 
         Ogre::SceneNode* node = scene->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(-20,0,0));
         node->attachObject(manual);
-    }
-
-    {
-        Ogre::Entity* object = scene->createEntity("ship", "ship.mesh");
-        Ogre::SceneNode* node = scene->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0,0,20));
-        node->scale(20,20,20);
-        node->attachObject(object);
     }
 
     {
