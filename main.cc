@@ -17,7 +17,7 @@ class SimpleFrameListener : public Ogre::FrameListener
             player_cam = scene->getCamera("player_cam");
 
             ship_object = scene->createEntity("ship", "ship.mesh");
-            ship_object->setCastShadows(true);
+            ship_object->getMesh()->buildEdgeList();
             ship_node = scene->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0,0,0));
             ship_node->scale(10,10,10);
             ship_node->attachObject(ship_object);
@@ -112,12 +112,12 @@ int main(int argc, char* argv[])
 
     {
         scene->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-        scene->setShadowColour(Ogre::ColourValue(1,0,0));
-        scene->setAmbientLight(Ogre::ColourValue(0,0,0));
+        scene->setShadowColour(Ogre::ColourValue(0,0,0));
+        scene->setAmbientLight(Ogre::ColourValue(.2,.2,.2));
 
         Ogre::Light* light = scene->createLight("main_light");
-        light->setType(Ogre::Light::LT_POINT);
-        light->setPosition(Ogre::Vector3(0, 80, 100));
+        light->setType(Ogre::Light::LT_DIRECTIONAL);
+        light->setDirection(Ogre::Vector3(1,-1,-1));
         light->setDiffuseColour(1,1,1);
     }
 
@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
     }
 
     {
-        Ogre::MeshManager::getSingleton().createPlane(
+        Ogre::MeshPtr ground_mesh = Ogre::MeshManager::getSingleton().createPlane(
             "ground_plane.mesh",
             Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
             Ogre::Plane(Ogre::Vector3::UNIT_Y, Ogre::Vector3::ZERO),
@@ -147,7 +147,26 @@ int main(int argc, char* argv[])
         ground->setCastShadows(false);
         ground->setMaterialName("ground_mat");
 
-        Ogre::SceneNode* node = scene->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0,-30,0));
+        Ogre::SceneNode* node = scene->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0,-60,0));
+        node->attachObject(ground);
+    }
+
+    {
+        Ogre::MeshPtr ground_mesh = Ogre::MeshManager::getSingleton().createPlane(
+            "ground2_plane.mesh",
+            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            Ogre::Plane(Ogre::Vector3::NEGATIVE_UNIT_X, Ogre::Vector3::ZERO),
+            200, 200,
+            2, 2,
+            true, 1, 1, 1,
+            Ogre::Vector3::UNIT_Y
+            );
+
+        Ogre::Entity* ground = scene->createEntity("ground2", "ground2_plane.mesh");
+        ground->setCastShadows(false);
+        ground->setMaterialName("ground_mat");
+
+        Ogre::SceneNode* node = scene->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(300,40,100));
         node->attachObject(ground);
     }
 
@@ -181,10 +200,12 @@ int main(int argc, char* argv[])
         manual->index(3);
         manual->end();
 
-        manual->setCastShadows(true);
+        Ogre::MeshPtr manual_mesh = manual->convertToMesh("manual_object.mesh");
+        manual_mesh->buildEdgeList();
 
+        Ogre::Entity* prout = scene->createEntity("manual_object", "manual_object.mesh");
         Ogre::SceneNode* node = scene->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(-20,0,0));
-        node->attachObject(manual);
+        node->attachObject(prout);
     }
 
     OIS::ParamList pl;
