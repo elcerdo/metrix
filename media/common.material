@@ -1,11 +1,18 @@
 material ground_mat
 {
+        receive_shadows on
+
 	technique
 	{
 		pass
 		{
+                        diffuse 0.3 0.3 0.3
+                        lighting on
+
 			texture_unit
 			{
+
+
 				texture ground.png
 			}
 		}
