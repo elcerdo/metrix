@@ -16,6 +16,7 @@ add_executable(prout
     main.cc)
 
 target_link_libraries(prout
+    boost_system
     ${OIS_LIBRARIES}
     ${OGRE_LIBRARIES})
 
